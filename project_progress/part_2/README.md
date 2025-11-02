@@ -1,7 +1,4 @@
-# Running the Notebook (Quick Guide)
-
-## What this is
-A simple guide to run the indexing and evaluation notebook (`Part2_Code.ipynb`).
+# Running the Notebook
 
 ## Requirements
 - Python 3.9+
@@ -12,7 +9,7 @@ The notebook will download NLTK resources automatically.
 
 ## Quick Start
 1. Open this folder in Jupyter or VS Code.
-2. Open `Part2_Code_LastVersion.ipynb`.
+2. Open `Part2_Code.ipynb`.
 3. Run all cells (Kernel → Restart & Run All).
 4. If you get a file path error, edit the `csv_path` variable in the "Build inverted index" cell to the correct location of `productos_preprocesados.csv`.
 
