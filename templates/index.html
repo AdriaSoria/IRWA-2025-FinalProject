@@ -1,18 +1,41 @@
 {% extends "base.html" %}
-{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block title %}Maison IRWA · Búsqueda{% endblock %}
+
 {% block content %}
-    <div class="centered">
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <form class="d-flex" method="POST" onSubmit='return validate();' action="/search">
-            <input class="form-control me-2" name="search-query" type="search" placeholder="Search" aria-label="Search"
-                   autofocus="autofocus">
-            <button class="btn btn-primary" type="submit" onclick='this.form.submit();'>Search</button>
-            <input name="upf-irwa-hidden" type="hidden" value="123">
-        </form>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
+<section class="hero hero-split">
+  <div class="hero-copy">
+    <p class="eyebrow">Colección digital · 2025</p>
+    <h1 class="hero-title">
+      Moda minimalista y atemporal para quienes buscan estilo auténtico.
+    </h1>
+    <p class="hero-subtitle">
+      By artists, for artists.
+    </p>
+    <form method="post" action="{{ url_for('search') }}" class="search-form">
+      <label class="sr-only" for="query-input">Buscar productos</label>
+      <input
+        id="query-input"
+        type="text"
+        name="query"
+        placeholder="Ej. side pocket cotton pant, slim cotton black..."
+        required
+      />
+      <button type="submit">Explorar</button>
+    </form>
+    {% if error %}
+      <p class="form-error">{{ error }}</p>
+    {% endif %}
+    <div class="chips">
+      <span>Popular:</span>
+      <a href="{{ url_for('search') }}?q=cotton%20multicolor%20track%20pant">cotton multicolor track pant</a>
+      <a href="{{ url_for('search') }}?q=women%20black%20track%20pant%20pockets">women black track pant pockets</a>
+      <a href="{{ url_for('search') }}?q=men%20cotton%20blue%20pant">men cotton blue pant</a>
     </div>
+  </div>
+  <div class="hero-cover">
+    <img src="{{ url_for('static', filename='CoverImage.jpeg') }}" alt="Editorial fashion cover" />
+  </div>
+</section>
 {% endblock %}
+

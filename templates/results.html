@@ -1,27 +1,72 @@
 {% extends "base.html" %}
-{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block title %}Resultados · {{ query }}{% endblock %}
+
 {% block content %}
-    Found <strong>{{ found_counter }}</strong> results...
-    <hr>
-    {% if rag_response %}
-        <div class="mb-4 p-3" style="border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9;">
-            <h5>AI-Generated Summary:</h5>
-            <p>{{ rag_response }}</p>
-        </div>
-    {% endif %}
-    <hr>
-    {% for item in results_list %}
-        <div class="pb-3">
-            <div class="doc-title">
-                <a href="{{ item.url }}">{{ item.title }}...
-                </a>
-            </div>
-            <div class="doc-desc">
-                {{ item.doc_date }} — {{ item.description }}
-            </div>
+<section class="results-hero">
+  <div>
+    <p class="eyebrow">Consulta</p>
+    <h1>"{{ query }}"</h1>
+  </div>
+  <div class="results-meta">
+    <span>{{ results|length }} piezas encontradas</span>
+    <form class="inline-search" method="post" action="{{ url_for('search') }}">
+      <label class="sr-only" for="results-query">Refinar búsqueda</label>
+      <input id="results-query" type="text" name="query" placeholder="Refinar búsqueda" />
+      <button type="submit">Buscar</button>
+    </form>
+  </div>
+</section>
 
-        </div>
+{% if summary %}
+  <section class="rag-summary">
+    <p class="label">Curaduría asistida</p>
+    <p class="content">{{ summary }}</p>
+  </section>
+{% endif %}
 
+{% if results %}
+  <section class="product-grid">
+    {% for product in results %}
+      {% set primary_image = product.images[0] if product.images else None %}
+      <article class="product-card">
+        <div class="product-media">
+          {% if primary_image %}
+            <img src="{{ primary_image }}" alt="{{ product.title }}" loading="lazy" />
+          {% else %}
+            <div class="media-placeholder">Sin imagen</div>
+          {% endif %}
+        </div>
+        <header>
+          <span class="rank">#{{ "%02d"|format(product.rank) }}</span>
+          <span class="brand">{{ product.brand or "Maison IRWA" }}</span>
+        </header>
+        <h3>{{ product.title }}</h3>
+        <div class="pricing">
+          {% if product.selling_price %}
+            <span class="price">{{ product.selling_price | currency }}</span>
+          {% endif %}
+          {% if product.discount %}
+            <span class="discount">{{ product.discount | percentage }}</span>
+          {% endif %}
+          {% if product.average_rating %}
+            <span class="rating">★ {{ "%.1f"|format(product.average_rating) }}</span>
+          {% endif %}
+        </div>
+        <div class="card-links">
+          {% if product.url %}
+            <a href="{{ product.url }}" target="_blank" rel="noopener">Ver en tienda</a>
+          {% endif %}
+          <a href="{{ url_for('product_detail', pid=product.pid) }}">Ver detalle</a>
+        </div>
+      </article>
     {% endfor %}
+  </section>
+{% else %}
+  <div class="empty-state">
+    <p>No encontramos coincidencias exactas. Prueba con menos términos o usa otra combinación.</p>
+    <a class="btn" href="{{ url_for('home') }}">Volver al buscador</a>
+  </div>
+{% endif %}
 {% endblock %}
 

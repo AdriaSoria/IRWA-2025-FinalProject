@@ -1,70 +1,86 @@
+"""Gemini-only RAG helper with inline API key support."""
+
+from __future__ import annotations
+
 import os
-from groq import Groq
-from dotenv import load_dotenv
-load_dotenv()  # take environment variables from .env
+from typing import Any, Dict, List, Optional
+
+import google.generativeai as genai  # type: ignore
+
+# Paste your Gemini API key here if you don't want to rely on env vars.
+GEMINI_API_KEY='AIzaSyCyhMe0ER1PlYlHqbuXO7wq25tAXZIOKm4'
 
 
-class RAGGenerator:
-
+class RAGAssistant:
     PROMPT_TEMPLATE = """
-        You are an expert product advisor helping users choose the best option from retrieved e-commerce products.
+You are an assistant for an e-commerce search engine.
 
-        ## Instructions:
-        1. Identify the single best product that matches the user's request.
-        2. Present the recommendation clearly in this format:
-        - Best Product: [Product PID] [Product Name]
-        - Why: [Explain in plain language why this product is the best fit, referring to specific attributes like price, features, quality, or fit to user’s needs.]
-        3. If there is another product that could also work, mention it briefly as an alternative.
-        4. If no product is a good fit, return ONLY this exact phrase:
-        "There are no good products that fit the request based on the retrieved results."
+User query:
+\"\"\"{query}\"\"\"
 
-        ## Retrieved Products:
-        {retrieved_results}
+Below is a list of products retrieved for this query.
+Each product has fields such as title, brand, price, discount, rating and description.
 
-        ## User Request:
-        {user_query}
+Products:
+{product_block}
 
-        ## Output Format:
-        - Best Product: ...
-        - Why: ...
-        - Alternative (optional): ...
-    """
+Your task:
 
-    def generate_response(self, user_query: str, retrieved_results: list, top_N: int = 20) -> dict:
-        """
-        Generate a response using the retrieved search results. 
-        Returns:
-            dict: Contains the generated suggestion and the quality evaluation.
-        """
-        DEFAULT_ANSWER = "RAG is not available. Check your credentials (.env file) or account limits."
+1. Briefly describe what type of products were found.
+2. Highlight key trends (e.g., price range, typical discounts, ratings, popular brands).
+3. Suggest:
+   - A "Best budget" option (if there is at least one clearly cheaper option).
+   - A "Best overall" option (if there is at least one with high rating / good value).
+4. ONLY use the information given in the product list. Do NOT invent features.
+5. Maximum length: 3 sentences.
+
+Return plain text, no bullet points or markdown.
+""".strip()
+
+    def __init__(self, model_name: str = "gemini-2.0-flash", max_products: int = 20) -> None:
+        if not GEMINI_API_KEY or GEMINI_API_KEY == "PASTE_YOUR_GEMINI_KEY_HERE":
+            raise RuntimeError(
+                "Set GEMINI_API_KEY in your environment or replace GEMINI_API_KEY constant."
+            )
+        genai.configure(api_key=GEMINI_API_KEY)
+        self.model = genai.GenerativeModel(model_name)
+        self.max_products = max_products
+
+    def summarize(self, query: str, results: List[Dict[str, Any]]) -> Optional[str]:
+        if not results:
+            return None
+        product_block = self._format_products(results[: self.max_products])
+        prompt = self.PROMPT_TEMPLATE.format(query=query, product_block=product_block)
         try:
-            client = Groq(
-                api_key=os.environ.get("GROQ_API_KEY"),
-            )
-            model_name = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
+            response = self.model.generate_content(prompt)
+            text = getattr(response, "text", None)
+            return text.strip() if text else None
+        except Exception as exc:  # pragma: no cover
+            print(f"[RAGAssistant] Gemini generation failed: {exc}")
+            return None
 
-            # Format the retrieved results for the prompt
-            formatted_results = "\n".join(
-                [f"- PID: {res.pid}, Title: {res.title}" for res in retrieved_results[:top_N]]
-            )
+    def _format_products(self, products: List[Dict[str, Any]]) -> str:
+        lines: List[str] = []
+        for idx, product in enumerate(products, start=1):
+            title = product.get("title") or "Untitled"
+            brand = product.get("brand")
+            price = product.get("selling_price") or product.get("actual_price") or "N/A"
+            discount = product.get("discount")
+            rating = product.get("average_rating")
+            description = product.get("description") or ""
+            url = product.get("url") or ""
 
-            prompt = self.PROMPT_TEMPLATE.format(
-                retrieved_results=formatted_results,
-                user_query=user_query
-            )
-
-            chat_completion = client.chat.completions.create(
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt,
-                    }
-                ],
-                model=model_name,
-            )
-
-            generation = chat_completion.choices[0].message.content
-            return generation
-        except Exception as e:
-            print(f"Error during RAG generation: {e}")
-            return DEFAULT_ANSWER
+            block = [f"Product {idx}:", f"  Title: {title}"]
+            if brand:
+                block.append(f"  Brand: {brand}")
+            block.append(f"  Price: {price}")
+            if discount not in (None, "", 0, "0%"):
+                block.append(f"  Discount: {discount}")
+            if rating not in (None, ""):
+                block.append(f"  Rating: {rating}")
+            if description:
+                block.append(f"  Description: {description[:200]}")
+            if url:
+                block.append(f"  URL: {url}")
+            lines.append("\n".join(block))
+        return "\n\n".join(lines)

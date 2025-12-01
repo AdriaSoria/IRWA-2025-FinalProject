@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.title }} · Detalle{% endblock %}
+
+{% block content %}
+<section class="product-hero">
+  <div>
+    <p class="eyebrow">{{ product.brand or "Maison IRWA" }}</p>
+    <h1>{{ product.title }}</h1>
+    <p class="description">{{ product.description or "Descripción no disponible." }}</p>
+  </div>
+  {% set hero_image = product.images[0] if product.images else None %}
+  {% if hero_image %}
+    <div class="hero-media">
+      <img src="{{ hero_image }}" alt="{{ product.title }}" loading="lazy" />
+    </div>
+  {% endif %}
+  <div class="pricing detail">
+    {% if product.selling_price %}
+      <span class="price">{{ product.selling_price | currency }}</span>
+    {% endif %}
+    {% if product.actual_price and product.selling_price and product.actual_price != product.selling_price %}
+      <span class="compare">{{ product.actual_price | currency }}</span>
+    {% endif %}
+    {% if product.discount %}
+      <span class="discount">{{ product.discount | percentage }}</span>
+    {% endif %}
+    {% if product.average_rating %}
+      <span class="rating">★ {{ "%.1f"|format(product.average_rating) }}</span>
+    {% endif %}
+    {% if product.url %}
+      <a href="{{ product.url }}" target="_blank" rel="noopener" class="btn">Ver en tienda</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="details-grid">
+  <div>
+    <span class="label">Categoría</span>
+    <span>{{ product.category or "—" }}</span>
+  </div>
+  <div>
+    <span class="label">Subcategoría</span>
+    <span>{{ product.sub_category or "—" }}</span>
+  </div>
+  <div>
+    <span class="label">Seller</span>
+    <span>{{ product.seller or "—" }}</span>
+  </div>
+  <div>
+    <span class="label">Disponibilidad</span>
+    <span>{{ "Agotado" if product.out_of_stock else "Disponible" }}</span>
+  </div>
+</section>
+
+<section class="details-table">
+  <h2>Detalles del producto</h2>
+  {% if product.product_details %}
+    <dl>
+      {% for key, value in product.product_details.items() %}
+        <dt>{{ key }}</dt>
+        <dd>{{ value }}</dd>
+      {% endfor %}
+    </dl>
+  {% else %}
+    <p>Sin atributos adicionales.</p>
+  {% endif %}
+</section>
+
+<p class="back-link">
+  <a href="{{ url_for('home') }}">← Volver al buscador</a>
+</p>
+{% endblock %}
+
