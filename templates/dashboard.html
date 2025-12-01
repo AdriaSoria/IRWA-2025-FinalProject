@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics · Dashboard{% endblock %}
+
+{% block content %}
+<section class="analytics-hero">
+  <div>
+    <p class="eyebrow">Live dashboard</p>
+    <h1>Engagement overview</h1>
+    <p class="hero-subtitle">Quick glance at the most visited products, user devices, and query activity.</p>
+  </div>
+  <div>
+    <a class="btn" href="{{ url_for('plot_number_of_views') }}" target="_blank">Open chart</a>
+  </div>
+</section>
+
+<section class="analytics-grid">
+  <div class="card wide">
+    <header>
+      <h2>Most visited products</h2>
+      <p>Documents ranked by total click count.</p>
+    </header>
+    <table class="analytics-table">
+      <thead>
+        <tr>
+          <th>PID</th>
+          <th>Clicks</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for doc in visited_docs %}
+          <tr>
+            <td>{{ doc.doc_id }}</td>
+            <td>{{ doc.counter }}</td>
+            <td>{{ doc.description or "—" }}</td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="3">No visited documents yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="analytics-grid">
+  <div class="card">
+    <header>
+      <h2>Device breakdown</h2>
+      <p>Platform share of all sessions.</p>
+    </header>
+    <ul class="analytics-list">
+      {% for item in device_mix %}
+        <li>
+          <span>{{ item.platform }}</span>
+          <small>{{ item.percentage }}%</small>
+        </li>
+      {% else %}
+        <li>No records yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="card">
+    <header>
+      <h2>Latest queries</h2>
+      <p>Realtime snapshot of what people are looking for.</p>
+    </header>
+    <ul class="analytics-list">
+      {% for q in top_queries %}
+        <li>
+          <span>{{ q.query }}</span>
+          <small>{{ q.timestamp.strftime("%H:%M:%S") }} · {{ q.results_count }} results</small>
+        </li>
+      {% else %}
+        <li>No data yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}
+

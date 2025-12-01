@@ -7,7 +7,9 @@ from typing import Any, Dict, List, Optional
 
 import google.generativeai as genai  # type: ignore
 
-# Paste your Gemini API key here if you don't want to rely on env vars.
+# Note: Storing API keys directly in source code is generally insecure and bad practice.
+# However, since this key is free for demo/testing and for simplicity in this project, we place it here.
+
 GEMINI_API_KEY='AIzaSyCyhMe0ER1PlYlHqbuXO7wq25tAXZIOKm4'
 
 

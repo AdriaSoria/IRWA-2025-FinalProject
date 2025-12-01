@@ -1,27 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}Maison IRWA · Búsqueda{% endblock %}
+{% block title %}Maison IRWA · Search{% endblock %}
 
 {% block content %}
 <section class="hero hero-split">
   <div class="hero-copy">
-    <p class="eyebrow">Colección digital · 2025</p>
+    <p class="eyebrow">Digital collection · 2025</p>
     <h1 class="hero-title">
-      Moda minimalista y atemporal para quienes buscan estilo auténtico.
+      Minimal, timeless fashion for those seeking authentic style.
     </h1>
     <p class="hero-subtitle">
       By artists, for artists.
     </p>
     <form method="post" action="{{ url_for('search') }}" class="search-form">
-      <label class="sr-only" for="query-input">Buscar productos</label>
+      <label class="sr-only" for="query-input">Search products</label>
       <input
         id="query-input"
         type="text"
         name="query"
-        placeholder="Ej. side pocket cotton pant, slim cotton black..."
+        placeholder="Eg. side pocket cotton pant, slim cotton black..."
         required
       />
-      <button type="submit">Explorar</button>
+      <button type="submit">Explore</button>
     </form>
     {% if error %}
       <p class="form-error">{{ error }}</p>
@@ -38,4 +38,3 @@
   </div>
 </section>
 {% endblock %}
-

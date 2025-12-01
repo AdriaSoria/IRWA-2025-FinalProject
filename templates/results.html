@@ -1,26 +1,26 @@
 {% extends "base.html" %}
 
-{% block title %}Resultados · {{ query }}{% endblock %}
+{% block title %}Results · {{ query }}{% endblock %}
 
 {% block content %}
 <section class="results-hero">
   <div>
-    <p class="eyebrow">Consulta</p>
+    <p class="eyebrow">Query</p>
     <h1>"{{ query }}"</h1>
   </div>
   <div class="results-meta">
-    <span>{{ results|length }} piezas encontradas</span>
+    <span>{{ results|length }} items found</span>
     <form class="inline-search" method="post" action="{{ url_for('search') }}">
-      <label class="sr-only" for="results-query">Refinar búsqueda</label>
-      <input id="results-query" type="text" name="query" placeholder="Refinar búsqueda" />
-      <button type="submit">Buscar</button>
+      <label class="sr-only" for="results-query">Refine search</label>
+      <input id="results-query" type="text" name="query" placeholder="Refine search" />
+      <button type="submit">Search</button>
     </form>
   </div>
 </section>
 
 {% if summary %}
   <section class="rag-summary">
-    <p class="label">Curaduría asistida</p>
+    <p class="label">Assisted curation</p>
     <p class="content">{{ summary }}</p>
   </section>
 {% endif %}
@@ -34,7 +34,7 @@
           {% if primary_image %}
             <img src="{{ primary_image }}" alt="{{ product.title }}" loading="lazy" />
           {% else %}
-            <div class="media-placeholder">Sin imagen</div>
+            <div class="media-placeholder">No image</div>
           {% endif %}
         </div>
         <header>
@@ -55,17 +55,17 @@
         </div>
         <div class="card-links">
           {% if product.url %}
-            <a href="{{ product.url }}" target="_blank" rel="noopener">Ver en tienda</a>
+            <a href="{{ product.url }}" target="_blank" rel="noopener">View on store</a>
           {% endif %}
-          <a href="{{ url_for('product_detail', pid=product.pid) }}">Ver detalle</a>
+          <a href="{{ url_for('product_detail', pid=product.pid) }}">View detail</a>
         </div>
       </article>
     {% endfor %}
   </section>
 {% else %}
   <div class="empty-state">
-    <p>No encontramos coincidencias exactas. Prueba con menos términos o usa otra combinación.</p>
-    <a class="btn" href="{{ url_for('home') }}">Volver al buscador</a>
+    <p>No exact matches found. Try fewer terms or a different combination.</p>
+    <a class="btn" href="{{ url_for('home') }}">Back to search</a>
   </div>
 {% endif %}
 {% endblock %}

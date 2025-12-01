@@ -225,6 +225,79 @@ main {
   margin-bottom: 0.75rem;
 }
 
+.analytics-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.analytics-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.analytics-cards article,
+.card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 1.5rem;
+}
+
+.card.wide {
+  grid-column: 1 / -1;
+}
+
+.analytics-cards .label,
+.card .label {
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.analytics-table th,
+.analytics-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.65rem 0.25rem;
+  text-align: left;
+}
+
+.analytics-table.compact th,
+.analytics-table.compact td {
+  padding: 0.4rem 0.25rem;
+}
+
+.analytics-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.analytics-list li {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 0;
+  font-size: 0.9rem;
+}
+
 .inline-search {
   display: flex;
   gap: 0.5rem;

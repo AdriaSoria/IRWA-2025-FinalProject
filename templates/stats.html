@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics · Stats{% endblock %}
+
+{% block content %}
+<section class="analytics-hero">
+  <div>
+    <p class="eyebrow">Usage analytics</p>
+    <h1>Search insights & behaviour</h1>
+    <p class="hero-subtitle">Key indicators that show how people interact with the Maison IRWA search experience.</p>
+  </div>
+</section>
+
+<section class="analytics-cards">
+  <article>
+    <span class="label">Sessions</span>
+    <h3>{{ summary.total_sessions }}</h3>
+  </article>
+  <article>
+    <span class="label">Requests</span>
+    <h3>{{ summary.total_requests }}</h3>
+  </article>
+  <article>
+    <span class="label">Queries</span>
+    <h3>{{ summary.total_queries }}</h3>
+    <p>{{ summary.avg_terms }} avg. terms/query</p>
+  </article>
+  <article>
+    <span class="label">Clicks</span>
+    <h3>{{ summary.total_clicks }}</h3>
+    <p>{{ summary.avg_dwell }} s avg. dwell</p>
+  </article>
+</section>
+
+<section class="analytics-grid">
+  <div class="card">
+    <header>
+      <h2>Top viewed products</h2>
+      <p>Documents that gather the most attention across all sessions.</p>
+    </header>
+    {% if clicks_data %}
+      <table class="analytics-table">
+        <thead>
+          <tr>
+            <th>PID</th>
+            <th>Title</th>
+            <th>Views</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for doc in clicks_data %}
+            <tr>
+              <td>{{ doc.pid }}</td>
+              <td>{{ doc.title }}</td>
+              <td>{{ doc.count }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No clicks registered yet.</p>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <header>
+      <h2>Recent queries</h2>
+      <p>What visitors have searched for lately.</p>
+    </header>
+    <ul class="analytics-list">
+      {% for query in recent_queries %}
+        <li>
+          <span>{{ query.query }}</span>
+          <small>{{ query.timestamp.strftime("%Y-%m-%d %H:%M:%S") }} · {{ query.num_terms }} terms</small>
+        </li>
+      {% else %}
+        <li>No queries yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="analytics-grid">
+  <div class="card">
+    <header>
+      <h2>Device mix</h2>
+      <p>Share of sessions by platform.</p>
+    </header>
+    <ul class="analytics-list">
+      {% for item in device_mix %}
+        <li>
+          <span>{{ item.platform }}</span>
+          <small>{{ item.percentage }}%</small>
+        </li>
+      {% else %}
+        <li>No device data yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="card">
+    <header>
+      <h2>Clicks by hour</h2>
+      <p>Activity distribution throughout the day.</p>
+    </header>
+    <table class="analytics-table compact">
+      <thead>
+        <tr>
+          <th>Hour</th>
+          <th>Clicks</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in clicks_by_hour %}
+          <tr>
+            <td>{{ "%02d"|format(item.hour) }}:00</td>
+            <td>{{ item.clicks }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
