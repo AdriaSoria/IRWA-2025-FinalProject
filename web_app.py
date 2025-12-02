@@ -99,22 +99,20 @@ def search():
     _finalize_pending_click()
     if request.method == "POST":
         query = request.form.get("query", "").strip()
-        if not query:
-            return render_template("index.html", error="Por favor ingresa una búsqueda.")
-        results = retrieval_engine.search(query, top_n=20)
-        analytics.log_query(session_id, query, results)
-        session["last_query"] = query
-        session["last_rank_map"] = {item["pid"]: item.get("rank") for item in results}
-        summary = rag_assistant.summarize(query, results)
-        return render_template("results.html", query=query, results=results, summary=summary)
+    else:
+        query = request.args.get("q", "").strip()
 
-    query = request.args.get("q", "").strip()
     if not query:
         return render_template("index.html")
+
     results = retrieval_engine.search(query, top_n=20)
     analytics.log_query(session_id, query, results)
     session["last_query"] = query
     session["last_rank_map"] = {item["pid"]: item.get("rank") for item in results}
+
+    if not results:
+        return render_template("results.html", query=query, results=[], summary=None)
+
     summary = rag_assistant.summarize(query, results)
     return render_template("results.html", query=query, results=results, summary=summary)
 

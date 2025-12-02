@@ -10,7 +10,7 @@ import google.generativeai as genai  # type: ignore
 # Note: Storing API keys directly in source code is generally insecure and bad practice.
 # However, since this key is free for demo/testing and for simplicity in this project, we place it here.
 
-GEMINI_API_KEY='AIzaSyCyhMe0ER1PlYlHqbuXO7wq25tAXZIOKm4'
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
 
 class RAGAssistant:
