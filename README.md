@@ -89,6 +89,9 @@ cd IRWA-2025-FinalProject
 source .venv/bin/activate  # or your virtualenv
 pip install -r requirements.txt
 
+# create/edit .env with:
+# GEMINI_API_KEY=<your-valid-gemini-api-key>
+
 export FLASK_APP=web_app.py
 export FLASK_ENV=development  # optional
 flask run
