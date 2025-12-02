@@ -132,7 +132,8 @@ dmypy.json
 /pyvenv.cfg
 
 # dotenv environment variables file
-.env
+./.env
 .venv
 irwa_env/
 data/
+.env

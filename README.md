@@ -1,18 +1,7 @@
-# Information Retrieval and Web Analytics (IRWA) - Final Project template
+# Information Retrieval and Web Analytics (IRWA) - Final Project
 
-<table>
-  <tr>
-    <td style="vertical-align: top;">
-      <img src="static/image.png" alt="Project Logo"/>
-    </td>
-    <td style="vertical-align: top;">
-      This repository contains the template code for the IRWA Final Project - Search Engine with Web Analytics.
-      The project is implemented using Python and the Flask web framework. It includes a simple web application that allows users to search through a collection of documents and view analytics about their searches.
-    </td>
-  </tr>
-</table>
+Maison IRWA · by Ivan, Stuart and Adrià
 
-----
 ## Project Structure
 
 ```
@@ -37,7 +26,7 @@
 Open a terminal console and execute:
 ```
 cd <your preferred projects root directory>
-git clone https://github.com/trokhymovych/irwa-search-engine.git
+git clone https://github.com/AdriaSoria/IRWA-2025-FinalProject.git
 ```
 
 ## Setting up the Python environment (only for the first time you run the project)
@@ -50,6 +39,8 @@ In the project root directory execute:
 pip3 install virtualenv
 virtualenv --version
 ```
+> Note: If `virtualenv` isn't on your PATH, you can always fall back to Python's built-in venv:
+> `python3 -m venv .venv` (same result as running `virtualenv .venv`).
 
 ### Prepare virtualenv for the project
 In the root of the project folder run to create a virtualenv named `irwa_venv`:
